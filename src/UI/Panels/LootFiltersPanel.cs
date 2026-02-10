@@ -290,12 +290,31 @@ namespace LoneEftDmaRadar.UI.Panels
                 {
                     var item = _filteredItems[i];
                     bool isSelected = (i == _selectedItemIndex);
-                    if (ImGui.Selectable($"{item.Name}##item{i}", isSelected))
+
+                    // Use a stable unique ID per item so selection/highlight behaves correctly after filtering.
+                    ImGui.PushID(item.BsgId ?? i.ToString());
+
+                    // Draw an explicit background highlight for the selected row.
+                    // This avoids relying on theme Header colors which may be near-invisible.
+                    if (isSelected)
+                    {
+                        var min = ImGui.GetCursorScreenPos();
+                        var rowHeight = ImGui.GetTextLineHeightWithSpacing();
+                        var max = new Vector2(min.X + ImGui.GetContentRegionAvail().X, min.Y + rowHeight);
+                        ImGui.GetWindowDrawList().AddRectFilled(min, max, ImGui.GetColorU32(ImGuiCol.HeaderActive));
+                    }
+
+                    // Force the selectable to span the full row width so highlight is always visible.
+                    if (ImGui.Selectable(item.Name, isSelected, ImGuiSelectableFlags.SpanAllColumns))
                     {
                         _selectedItemIndex = i;
                     }
+
+                    // Keep the selected row focused so ImGui will render it consistently as selected.
                     if (isSelected)
                         ImGui.SetItemDefaultFocus();
+
+                    ImGui.PopID();
                 }
                 ImGui.EndListBox();
             }
