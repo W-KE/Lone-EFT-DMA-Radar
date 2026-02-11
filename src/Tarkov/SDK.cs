@@ -59,7 +59,7 @@ namespace SDK
 			public const uint Location = 0x870; // string
 			public const uint Profile = 0x900; // object
 			public const uint _handsController = 0x980; // object
-			public const uint _playerLookRaycastTransform = 0xA08; // object
+			public const uint _playerLookRaycastTransform = 0xA10; // object
 		}
 
 		public readonly partial struct ObservedPlayerView

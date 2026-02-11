@@ -84,6 +84,7 @@ namespace LoneEftDmaRadar.Tarkov.World
             if (allPlayers.Count == 0)
                 return;
             using var scatter = Memory.CreateScatter(VmmSharpEx.Options.VmmFlags.NOCACHE);
+            scatter.PrepareRead(this, 8); // Add a single read to prevent failures
             foreach (var player in allPlayers)
             {
                 player.OnRegRefresh(scatter, registered);

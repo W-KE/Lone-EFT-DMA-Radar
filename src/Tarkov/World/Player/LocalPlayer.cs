@@ -82,6 +82,7 @@ namespace LoneEftDmaRadar.Tarkov.World.Player
                                 using (vertices)
                                 {
                                     _ = _lookRaycastTransform.UpdatePosition(vertices.Memory.Span);
+                                    //Logging.WriteLine(_lookRaycastTransform.Position);
                                 }
                             }
                             else
@@ -91,6 +92,7 @@ namespace LoneEftDmaRadar.Tarkov.World.Player
                         }
                         catch
                         {
+                            //Logging.WriteLine($"[LocalPlayer] ERROR Updating LookRaycastTransform: {ex}");
                             _lookRaycastTransform = null;
                         }
                     };
@@ -98,6 +100,7 @@ namespace LoneEftDmaRadar.Tarkov.World.Player
             }
             catch
             {
+                //Logging.WriteLine($"[LocalPlayer] ERROR Updating LookRaycastTransform: {ex}");
                 _lookRaycastTransform = null;
             }
             finally
