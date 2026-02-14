@@ -12,19 +12,23 @@ namespace LoneEftDmaRadar.Web.WebRadar.Data
         /// <summary>
         /// Update version (used for ordering).
         /// </summary>
+        [MemoryPackOrder(0)]
         public ulong Version { get; set; } = 0;
         /// <summary>
         /// True if In-Game, otherwise False.
         /// </summary>
+        [MemoryPackOrder(1)]
         public bool InGame { get; set; } = false;
         /// <summary>
         /// Contains the Map ID of the current map.
         /// </summary>
+        [MemoryPackOrder(2)]
         public string MapID { get; set; } = null;
         /// <summary>
         /// All Players currently on the map.
         /// </summary>
-        public WebRadarPlayer[] Players { get; set; } = null;
+        [MemoryPackOrder(3)]
+        public IEnumerable<WebRadarPlayer> Players { get; set; } = null;
     }
 }
 

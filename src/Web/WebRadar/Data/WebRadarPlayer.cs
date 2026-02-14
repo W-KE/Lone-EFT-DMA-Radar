@@ -13,26 +13,32 @@ namespace LoneEftDmaRadar.Web.WebRadar.Data
         /// <summary>
         /// Player Name.
         /// </summary>
+        [MemoryPackOrder(0)]
         public string Name { get; set; }
         /// <summary>
         /// Player Type (PMC, Scav,etc.)
         /// </summary>
+        [MemoryPackOrder(1)]
         public WebPlayerType Type { get; set; }
         /// <summary>
         /// True if player is active, otherwise False.
         /// </summary>
+        [MemoryPackOrder(2)]
         public bool IsActive { get; set; }
         /// <summary>
         /// True if player is alive, otherwise False.
         /// </summary>
+        [MemoryPackOrder(3)]
         public bool IsAlive { get; set; }
         /// <summary>
         /// Unity World Position.
         /// </summary>
+        [MemoryPackOrder(4)]
         public Vector3 Position { get; set; }
         /// <summary>
         /// Unity World Rotation.
         /// </summary>
+        [MemoryPackOrder(5)]
         public Vector2 Rotation { get; set; }
 
         /// <summary>
