@@ -28,7 +28,7 @@ namespace LoneEftDmaRadar.Web.WebRadar.Data
         /// All Players currently on the map.
         /// </summary>
         [MemoryPackOrder(3)]
-        public IEnumerable<WebRadarPlayer> Players { get; set; } = null;
+        public WebRadarPlayer[] Players { get; set; } = null;
     }
 }
 
