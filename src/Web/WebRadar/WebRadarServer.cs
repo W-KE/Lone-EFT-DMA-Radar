@@ -2,14 +2,14 @@
  * Lone EFT DMA Radar - Copyright (c) 2026 Lone DMA
  * Licensed under GNU AGPLv3. See https://www.gnu.org/licenses/agpl-3.0.html
  */
-using LoneEftDmaRadar.Misc;
-using LoneEftDmaRadar.Misc.JSON;
 using LoneEftDmaRadar.Tarkov.World.Player;
 using LoneEftDmaRadar.UI;
 using LoneEftDmaRadar.Web.WebRadar.Data;
+using LoneEftDmaRadar.Web.WebRadar.MemoryPack;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Open.Nat;
@@ -39,13 +39,8 @@ namespace LoneEftDmaRadar.Web.WebRadar
                 webBuilder.UseKestrel()
                     .ConfigureServices(services =>
                     {
-                        services.AddSignalR()
-                            .AddJsonProtocol(options =>
-                            {
-                                options.PayloadSerializerOptions.TypeInfoResolver = WebRadarJsonContext.Default;
-                                options.PayloadSerializerOptions.Converters.Add(new Vector2JsonConverter());
-                                options.PayloadSerializerOptions.Converters.Add(new Vector3JsonConverter());
-                            });
+                        services.AddSignalR();
+                        services.AddSingleton<IHubProtocol, MemoryPackHub>();
                         services.AddCors(options =>
                         {
                             options.AddDefaultPolicy(builder =>
@@ -110,7 +105,7 @@ namespace LoneEftDmaRadar.Web.WebRadar
                         {
                             update.InGame = true;
                             update.MapID = Memory.MapID;
-                            update.Players = players.Select(p => WebRadarPlayer.Create(p));
+                            update.Players = players.Select(p => WebRadarPlayer.Create(p)).ToArray();
                         }
                         else
                         {
