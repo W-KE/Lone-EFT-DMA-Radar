@@ -19,10 +19,7 @@ namespace LoneEftDmaRadar.Web.WebRadar
 {
     internal static class WebRadarServer
     {
-        /// <summary>
-        /// Password for this Server.
-        /// </summary>
-        public static string Password { get; } = Utilities.GetRandomPassword(10);
+        private static WebRadarConfig Config { get; } = Program.Config.WebRadar;
 
         /// <summary>
         /// Startup web server for Web Radar.
@@ -228,7 +225,7 @@ namespace LoneEftDmaRadar.Web.WebRadar
                 var httpContext = Context.GetHttpContext();
 
                 string password = httpContext?.Request?.Query?["password"].ToString() ?? "";
-                if (password != Password)
+                if (password != Config.Password)
                 {
                     Context.Abort();
                     return;

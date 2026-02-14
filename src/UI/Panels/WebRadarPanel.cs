@@ -14,25 +14,25 @@ namespace LoneEftDmaRadar.UI.Panels
     {
         // Panel-local state (moved from RadarUIState)
         private static string _bindAddress;
+        private static string _password;
         private static string _port;
         private static string _tickRate;
         private static bool _upnpEnabled;
-        private static readonly string _password;
         private static bool _isRunning;
         private static string _startButtonText = "Start";
         private static string _serverUrl = string.Empty;
         private static bool _uiEnabled = true;
 
-        private static EftDmaConfig Config { get; } = Program.Config;
+        private static WebRadarConfig Config { get; } = Program.Config.WebRadar;
 
         static WebRadarPanel()
         {
             // Initialize from config
-            _bindAddress = Config.WebRadar.IP ?? "0.0.0.0";
-            _port = Config.WebRadar.Port ?? "55555";
-            _tickRate = Config.WebRadar.TickRate ?? "60";
-            _upnpEnabled = Config.WebRadar.UPnP;
-            _password = WebRadarServer.Password;
+            _bindAddress = Config.IP ?? "0.0.0.0";
+            _password = Config.Password;
+            _port = Config.Port ?? "55555";
+            _tickRate = Config.TickRate ?? "60";
+            _upnpEnabled = Config.UPnP;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace LoneEftDmaRadar.UI.Panels
             ImGui.SetNextItemWidth(200);
             if (ImGui.InputText("##BindAddress", ref _bindAddress, 64))
             {
-                Config.WebRadar.IP = _bindAddress;
+                Config.IP = _bindAddress;
             }
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("IP address to bind the server to (0.0.0.0 for all interfaces)");
@@ -65,7 +65,7 @@ namespace LoneEftDmaRadar.UI.Panels
             {
                 if (int.TryParse(_port, out _))
                 {
-                    Config.WebRadar.Port = _port;
+                    Config.Port = _port;
                 }
             }
             if (ImGui.IsItemHovered())
@@ -77,7 +77,7 @@ namespace LoneEftDmaRadar.UI.Panels
             {
                 if (int.TryParse(_tickRate, out _))
                 {
-                    Config.WebRadar.TickRate = _tickRate;
+                    Config.TickRate = _tickRate;
                 }
             }
             if (ImGui.IsItemHovered())
@@ -85,7 +85,7 @@ namespace LoneEftDmaRadar.UI.Panels
 
             if (ImGui.Checkbox("Enable UPnP", ref _upnpEnabled))
             {
-                Config.WebRadar.UPnP = _upnpEnabled;
+                Config.UPnP = _upnpEnabled;
             }
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Automatically configure port forwarding on your router");
@@ -94,12 +94,15 @@ namespace LoneEftDmaRadar.UI.Panels
 
             ImGui.Separator();
 
-            // Password (read-only, auto-generated)
+            // Password (editable before start, read-only after)
             ImGui.Text("Session Password:");
-            ImGui.SameLine();
-            ImGui.TextColored(new Vector4(0.2f, 0.8f, 0.2f, 1f), _password);
+            ImGui.SetNextItemWidth(200);
+            if (ImGui.InputText("##Password", ref _password, 64))
+            {
+                Config.Password = _password;
+            }
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip("Auto-generated password for this session");
+                ImGui.SetTooltip("Password for the web radar session (editable before starting)");
 
             if (!_uiEnabled)
             {
@@ -151,6 +154,7 @@ namespace LoneEftDmaRadar.UI.Panels
 
             try
             {
+                ArgumentOutOfRangeException.ThrowIfLessThan(Config.Password.Length, 4, nameof(Config.Password));
                 var tickRate = TimeSpan.FromSeconds(1) / int.Parse(_tickRate);
                 string bindIP = _bindAddress.Trim();
                 int port = int.Parse(_port);
@@ -160,7 +164,7 @@ namespace LoneEftDmaRadar.UI.Panels
 
                 _isRunning = true;
                 _startButtonText = "Running...";
-                _serverUrl = $"https://webradar.lone-dma.org/?host={externalIP}&port={port}&password={_password}";
+                _serverUrl = $"https://webradar.lone-dma.org?host={externalIP}&port={port}&password={Config.Password}";
             }
             catch (Exception ex)
             {
