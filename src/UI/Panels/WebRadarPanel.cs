@@ -164,7 +164,7 @@ namespace LoneEftDmaRadar.UI.Panels
 
                 _isRunning = true;
                 _startButtonText = "Running...";
-                _serverUrl = $"https://webradar.lone-dma.org?host={externalIP}&port={port}&password={Config.Password}";
+                _serverUrl = $"https://webradar.lone-dma.org?host={externalIP}&port={port}&password={Uri.EscapeDataString(Config.Password)}";
             }
             catch (Exception ex)
             {
